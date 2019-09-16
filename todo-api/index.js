@@ -44,7 +44,7 @@ app.put('/edittodo', (req,res) => {
 })
 
 app.put('/completeaction', (req,res) => {
-    db.query(`update todo set isCompleted = 1 where id ${req.body.id}`, (err, result) => {
+    db.query(`update todo set isCompleted = 1 where id = ${req.body.id}`, (err, result) => {
         if(err) throw err
         res.send('Update Success!')
     })
