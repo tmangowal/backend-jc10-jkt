@@ -3,7 +3,7 @@ var app = express()
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const port = 8080
-const {addTodo, deleteTodo, editTodo, kochengOren, getList} = require('./1.controllers/todoControllers')
+const {addTodo, deleteTodo, editTodo, kochengOren, getList, getListByCompleted} = require('./1.controllers/todoControllers')
 // import todoController from './1.controllers/todoControllers'
 
 app.use(bodyParser())
@@ -24,6 +24,8 @@ app.get('/', (req,res) => {
 })
 
 app.get('/getlist', getList)
+
+app.get('/getlistcompleted', getListByCompleted)
 
 app.post('/addtodo', addTodo)
 
