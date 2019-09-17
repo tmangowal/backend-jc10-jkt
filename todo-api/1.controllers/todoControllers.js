@@ -7,6 +7,7 @@ module.exports = {
             try{
                 if(err) throw err
                 res.send(result)
+                console.log(result)
             }catch(err){
                 console.log(err)
             }
@@ -25,6 +26,7 @@ module.exports = {
         db.query(`insert into todo values (0, '${req.body.action}', 0)`, (err, result) => {
             if(err) throw err
             res.send('Successfully Added Action')
+            console.log(result)
         })
     },
 

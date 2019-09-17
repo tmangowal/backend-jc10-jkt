@@ -2,6 +2,7 @@ import React from 'react';
 import Axios from 'axios'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import swal from 'sweetalert'
 
 const urlApi = 'http://localhost:8080/'
 
@@ -36,11 +37,25 @@ class App extends React.Component {
           <td>{val.action}</td>
           <td>{val.isCompleted ? 'Done' : 'Pending'}</td>
           <td><input onClick={() => this.onBtnDeleteHandler(val.id)} type="button" value="DELETE" className="btn btn-danger"/></td>
+          <td><input onClick={() => this.onCompleteAction(val.id)} type="button" value="Complete Action" className={"btn btn-secondary " + (val.isCompleted ? 'disabled' : null)}/></td>
         </tr>
       )
     })
 
     return jsx
+  }
+
+  onCompleteAction = (id) => {
+    Axios.put(urlApi + 'completeaction', {id: id})
+    .then(res => {
+      console.log(res)
+      swal('Success', 'Successfully completed action', 'success')
+      this.getDataApi()
+    })
+    .catch(err => {
+      alert('Error')
+      console.log(err)
+    })
   }
 
   onBtnDeleteHandler = (id) => {
@@ -99,6 +114,7 @@ class App extends React.Component {
               <th>Action</th>
               <th>Status</th>
               <th>Delete</th>
+              <th>Button</th>
             </tr>
           </thead>
           <tbody>
