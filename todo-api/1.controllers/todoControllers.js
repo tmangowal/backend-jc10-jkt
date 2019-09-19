@@ -50,5 +50,12 @@ module.exports = {
             if(err) throw err
             res.send(result)
         })
+    },
+
+    getUsersByRole: (req,res) => {
+        db.query(`select * from users where role = '${req.query.role}'`, (err,result) => {
+            if(err) throw err
+            res.send(result)
+        })
     }
 }
