@@ -3,15 +3,24 @@ var app = express()
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const port = 8080
-const {addTodo, deleteTodo, editTodo, kochengOren, getList, getListByCompleted, getUsersByRole} = require('./1.controllers/todoControllers')
+const {
+    addTodo,
+    deleteTodo,
+    editTodo,
+    kochengOren,
+    getList,
+    getListByCompleted,
+    getUsersByRole,
+    getTodoJoinUsers
+} = require('./1.controllers/todoControllers')
 // import todoController from './1.controllers/todoControllers'
 
-app.use(bodyParser())
+app.use(bodyParser.json())
 app.use(cors())
 
 /**
  * CRUD
- * 
+ *
  * Create
  * Read
  * Update
@@ -19,7 +28,7 @@ app.use(cors())
  * 
  */
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     res.send(`<h1>Selamat datang di API TODO JC10 JKT</h1>`)
 })
 
@@ -36,5 +45,7 @@ app.put('/completeaction', kochengOren)
 app.delete('/deletetodo/:terserah', deleteTodo)
 
 app.get('/getusersbyrole', getUsersByRole)
+
+app.get('/gettodobyuser', getTodoJoinUsers)
 
 app.listen(port, console.log('Listening in port ' + port))

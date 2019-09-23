@@ -8,12 +8,14 @@ const {
     authRouter
 } = require('./2.routers')
 
-app.use(bodyParser())
+app.use(bodyParser.json())
 app.use(cors())
 
 app.get('/', (req,res) => {
     res.send('hehe')
 })
+
+app.use(express.static('./public'))
 
 app.use('/auth', authRouter)
 
