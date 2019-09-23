@@ -74,5 +74,15 @@ module.exports = {
 
             res.send(data)
         })
+    },
+
+    getUsersByUsername: (req,res) => {
+        db.query(`select * from users where username = '${req.query.username}'`, (err,result) => {
+            if(err) throw err
+            console.log(result[0])
+            let data = result[0]
+            data.message = 'Get Success!'
+            res.send(data)
+        })
     }
 }

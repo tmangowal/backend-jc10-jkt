@@ -11,7 +11,8 @@ const {
     getList,
     getListByCompleted,
     getUsersByRole,
-    getTodoJoinUsers
+    getTodoJoinUsers,
+    getUsersByUsername
 } = require('./1.controllers/todoControllers')
 // import todoController from './1.controllers/todoControllers'
 
@@ -37,7 +38,7 @@ app.get('/getlist', getList)
 app.get('/getlistcompleted', getListByCompleted)
 
 app.post('/addtodo', addTodo)
-
+// graphql
 app.put('/edittodo', editTodo)
 
 app.put('/completeaction', kochengOren)
@@ -47,5 +48,7 @@ app.delete('/deletetodo/:terserah', deleteTodo)
 app.get('/getusersbyrole', getUsersByRole)
 
 app.get('/gettodobyuser', getTodoJoinUsers)
+
+app.get('/getuserbyusername', getUsersByUsername)
 
 app.listen(port, console.log('Listening in port ' + port))
