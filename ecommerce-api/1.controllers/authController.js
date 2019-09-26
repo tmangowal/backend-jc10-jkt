@@ -1,5 +1,6 @@
 const db = require('../database')
 var nodemailer = require('nodemailer')
+var { pdfcreate } = require('../3.helpers/html-pdf')
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -79,5 +80,37 @@ module.exports = {
             if(err) throw err
             res.send('Your account has been verified!')
         })
+    },
+
+    testEmail: (req,res) => {
+        let options = {
+            format: 'A4', 
+            orientation: "landscape",
+            border : {
+                top: "0.5in",
+                left: "0.15in",
+                right: "0.15in",
+                bottom: "0.25in"
+            }
+        }
+
+        let d = new Date()
+
+        let replacements = {
+            username: req.query.username,
+            today: `${d.getDate()}-${d.getMonth()+1}`,
+            data: ['Wahai', 'Kalian', 'Kaum', 'JOMBLO']
+        }
+
+        pdfcreate('./4.pdfTemplates/firstTemplate.html', replacements, options, (hasil) => {
+            res.attachment('testingPDF.pdf')
+            hasil.pipe(res)
+        })
+
+        /**
+         * (stream) => {
+         *      
+         * }
+         */
     }
 }
