@@ -1,6 +1,7 @@
 const db = require('../database')
 var nodemailer = require('nodemailer')
 var { pdfcreate } = require('../3.helpers/html-pdf')
+const fs = require('fs')
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -103,8 +104,21 @@ module.exports = {
         }
 
         pdfcreate('./4.pdfTemplates/firstTemplate.html', replacements, options, (hasil) => {
-            res.attachment('testingPDF.pdf')
-            hasil.pipe(res)
+            // res.attachment('testingPDF.pdf')
+            // hasil.pipe(res)
+            console.log(hasil)
+            transporter.sendMail({
+                from: 'Purwadhika',
+                to: 'tmangowal123@gmail.com',
+                subject: 'Testing attachment',
+                html: '<h1>This is an attachment</h1>',
+                attachments: [
+                    {
+                        filename: `${req.query.username}-${d.getDate()}-${d.getMonth()+1}.pdf`,
+                        content: fs.createReadStream(hasil.path)
+                    }
+                ]
+            })
         })
 
         /**
