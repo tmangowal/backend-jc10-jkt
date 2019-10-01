@@ -11,7 +11,8 @@ class App extends React.Component {
   state = {
     data : [],
     inputTodo: '',
-    selectInput: ''
+    selectInput: '',
+    selectedFile: null
   }
 
   componentDidMount () {
@@ -19,30 +20,30 @@ class App extends React.Component {
   }
 
   getDataApi = () => {
-    Axios.get(urlApi + 'getList')
-    .then(res => {
-      this.setState({data: res.data})
-    })
-    .catch(err => {
-      console.log(err)
-      alert('System Error')
-    })
+    // Axios.get(urlApi + 'getList')
+    // .then(res => {
+    //   this.setState({data: res.data})
+    // })
+    // .catch(err => {
+    //   console.log(err)
+    //   alert('System Error')
+    // })
   }
 
   renderTodo = () => {
-    let jsx = this.state.data.map((val, idx) => {
-      return(
-        <tr>
-          <td>{idx + 1}</td>
-          <td>{val.action}</td>
-          <td>{val.isCompleted ? 'Done' : 'Pending'}</td>
-          <td><input onClick={() => this.onBtnDeleteHandler(val.id)} type="button" value="DELETE" className="btn btn-danger"/></td>
-          <td><input onClick={() => this.onCompleteAction(val.id)} type="button" value="Complete Action" className={"btn btn-secondary " + (val.isCompleted ? 'disabled' : null)}/></td>
-        </tr>
-      )
-    })
+    // let jsx = this.state.data.map((val, idx) => {
+    //   return(
+    //     <tr>
+    //       <td>{idx + 1}</td>
+    //       <td>{val.action}</td>
+    //       <td>{val.isCompleted ? 'Done' : 'Pending'}</td>
+    //       <td><input onClick={() => this.onBtnDeleteHandler(val.id)} type="button" value="DELETE" className="btn btn-danger"/></td>
+    //       <td><input onClick={() => this.onCompleteAction(val.id)} type="button" value="Complete Action" className={"btn btn-secondary " + (val.isCompleted ? 'disabled' : null)}/></td>
+    //     </tr>
+    //   )
+    // })
 
-    return jsx
+    // return jsx
   }
 
   onCompleteAction = (id) => {
@@ -104,6 +105,19 @@ class App extends React.Component {
     }
   }
 
+  onSubmit = () => {
+    var fd = new FormData()
+    fd.append('aneh', this.state.selectedFile, this.state.selectedFile.name)``
+
+    Axios.post('http://localhost:8080/uploadimage', fd)
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
   render(){
     return(
       <div className="container">
@@ -135,6 +149,16 @@ class App extends React.Component {
             </tr>
           </tfoot>
         </table>
+        <hr/>
+        <div className="row">
+          <div className="offset-2 col-4">
+            <input type="file" ref="fileBtn" className="d-none" onChange={e => this.setState({selectedFile: e.target.files[0]})} />
+            <input type="button" onClick={() => this.refs.fileBtn.click()} value="Select a file" className="btn btn-block btn-primary"/>
+          </div>
+          <div className="col-4">
+            <input type="button" onClick={this.onSubmit} value="Submit" className="btn btn-block btn-success"/>
+          </div>
+        </div>
       </div>
     )
   }
