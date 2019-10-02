@@ -12,7 +12,9 @@ class App extends React.Component {
     data : [],
     inputTodo: '',
     selectInput: '',
-    selectedFile: null
+    selectedFile: null,
+    products: [],
+    productName: ''
   }
 
   componentDidMount () {
@@ -20,14 +22,14 @@ class App extends React.Component {
   }
 
   getDataApi = () => {
-    // Axios.get(urlApi + 'getList')
-    // .then(res => {
-    //   this.setState({data: res.data})
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    //   alert('System Error')
-    // })
+    Axios.get(urlApi + 'get')
+    .then(res => {
+      this.setState({products: res.data})
+    })
+    .catch(err => {
+      console.log(err)
+      alert('System Error')
+    })
   }
 
   renderTodo = () => {
@@ -107,7 +109,10 @@ class App extends React.Component {
 
   onSubmit = () => {
     var fd = new FormData()
-    fd.append('aneh', this.state.selectedFile, this.state.selectedFile.name)``
+    fd.append('aneh', this.state.selectedFile, this.state.selectedFile.name)
+    fd.append('productName', this.state.productName)
+
+    console.log(this.state.productName)
 
     Axios.post('http://localhost:8080/uploadimage', fd)
     .then(res => {
@@ -116,6 +121,20 @@ class App extends React.Component {
     .catch(err => {
       console.log(err)
     })
+  }
+
+  renderProducts = () => {
+    let jsx = this.state.products.map(val => {
+      return(
+        <tr>
+          <td>{val.id}</td>
+          <td>{val.product_name}</td>
+          <td><img src={urlApi + val.product_image} width="200px" alt=""/></td>
+          {/* src="http://localhost:8080/files/PRD-124y23r12.jpeg" */}
+        </tr>
+      )
+    })
+    return jsx
   }
 
   render(){
@@ -151,7 +170,10 @@ class App extends React.Component {
         </table>
         <hr/>
         <div className="row">
-          <div className="offset-2 col-4">
+          <div className="col-4">
+            <input type="text" className="form-control" onChange={e => this.setState({productName: e.target.value})} placeholder="Product Name"/>
+          </div>
+          <div className="col-4">
             <input type="file" ref="fileBtn" className="d-none" onChange={e => this.setState({selectedFile: e.target.files[0]})} />
             <input type="button" onClick={() => this.refs.fileBtn.click()} value="Select a file" className="btn btn-block btn-primary"/>
           </div>
@@ -159,6 +181,18 @@ class App extends React.Component {
             <input type="button" onClick={this.onSubmit} value="Submit" className="btn btn-block btn-success"/>
           </div>
         </div>
+        <hr/>
+        <table className="table">
+          <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Image</th>
+          </thead>
+          <tbody>
+            {this.renderProducts()}
+          </tbody>
+
+        </table>
       </div>
     )
   }

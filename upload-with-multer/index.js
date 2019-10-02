@@ -4,6 +4,14 @@ const port = 8080
 var cors = require('cors')
 var bodyParser = require('body-parser')
 var multer = require('multer')
+var mysql = require('mysql')
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'upload_image'
+})
 
 app.use(bodyParser.json())
 app.use(cors())
@@ -34,8 +42,18 @@ let upload = multer({
 })
 
 app.post('/uploadimage', upload.single('aneh'), (req, res) => {
-    console.log(req)
-    res.send('Success')
+    // console.log(req)
+    db.query(`insert into manage_product values (0, '${req.body.productName}', '${req.file.path.replace('uploads','files')}')`, (err,result) => {
+        if(err) throw err
+        res.send('Success')
+    })
+})
+
+app.get('/get', (req,res) => {
+    db.query(`select * from manage_product`, (err,result) => {
+        if(err) throw err
+        res.send(result)
+    })
 })
 
 app.listen(port, console.log('Listening in port ' + port))
