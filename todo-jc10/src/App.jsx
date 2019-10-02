@@ -14,7 +14,8 @@ class App extends React.Component {
     selectInput: '',
     selectedFile: null,
     products: [],
-    productName: ''
+    productName: '',
+    productPrice: 0
   }
 
   componentDidMount () {
@@ -109,10 +110,17 @@ class App extends React.Component {
 
   onSubmit = () => {
     var fd = new FormData()
+    var data = {
+      productName : this.state.productName,
+      productPrice: this.state.productPrice
+    }
     fd.append('aneh', this.state.selectedFile, this.state.selectedFile.name)
-    fd.append('productName', this.state.productName)
+    fd.append('data', JSON.stringify(data))
 
-    console.log(this.state.productName)
+    // '{
+    //   productName : 'testing',
+    //   productPrice: 123123
+    // }'
 
     Axios.post('http://localhost:8080/uploadimage', fd)
     .then(res => {
@@ -170,8 +178,11 @@ class App extends React.Component {
         </table>
         <hr/>
         <div className="row">
-          <div className="col-4">
+          <div className="col-2">
             <input type="text" className="form-control" onChange={e => this.setState({productName: e.target.value})} placeholder="Product Name"/>
+          </div>
+          <div className="col-2">
+            <input type="text" className="form-control" onChange={e => this.setState({productPrice: e.target.value})} placeholder="Product Price"/>
           </div>
           <div className="col-4">
             <input type="file" ref="fileBtn" className="d-none" onChange={e => this.setState({selectedFile: e.target.files[0]})} />

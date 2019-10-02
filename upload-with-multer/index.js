@@ -5,6 +5,7 @@ var cors = require('cors')
 var bodyParser = require('body-parser')
 var multer = require('multer')
 var mysql = require('mysql')
+const fs = require('fs')
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -42,18 +43,33 @@ let upload = multer({
 })
 
 app.post('/uploadimage', upload.single('aneh'), (req, res) => {
-    // console.log(req)
-    db.query(`insert into manage_product values (0, '${req.body.productName}', '${req.file.path.replace('uploads','files')}')`, (err,result) => {
-        if(err) throw err
-        res.send('Success')
-    })
+
+    try {
+        if(req.validation) throw req.validation
+        if(req.file.size > 5) throw {error : true, message : 'Image size too large'}
+        let data = JSON.parse(req.body.data)
+
+        db.query(`insert into manage_product values (0, '${data.productName}', '${req.file.path.replace('uploads','files')}', ${data.productPrice})`, (err,result) => {
+            if(err) throw err
+            res.send('Success')
+        })
+        
+    } catch (error) {
+        fs.unlinkSync(req.file.path)
+        console.log(error)
+    }
+    
 })
 
 app.get('/get', (req,res) => {
-    db.query(`select * from manage_product`, (err,result) => {
-        if(err) throw err
-        res.send(result)
-    })
+    try{
+        db.query(`select * from manage_product`, (err,result) => {
+            if(err) throw err
+            res.send(result)
+        })
+    }catch(error) {
+        console.log(error)
+    }
 })
 
 app.listen(port, console.log('Listening in port ' + port))
