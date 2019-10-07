@@ -12,7 +12,7 @@ class filterBE extends Component {
         agemax : null,
         pclass : 0,
         gender : null,
-        survived : null,
+        survived : 2,
         pClassOption : []
     }
 
@@ -22,7 +22,17 @@ class filterBE extends Component {
     }
 
     getDataApi = () => {
-        Axios.get(URL_API + 'getalldata')
+        let filterObj = {}
+
+        if(this.props.location.search){
+            console.log(this.props.location.search)
+            filterObj = querystring.parse(this.props.location.search)
+            console.log(filterObj)
+        }
+
+        Axios.get(URL_API + 'getalldata', {
+            params : filterObj
+        })
         .then(res => {
             this.setState({data : res.data})
         })
@@ -54,17 +64,41 @@ class filterBE extends Component {
     onBtnSubmit = () => {
         let filterData = {}
         let {name, agemax, agemin, gender, survived, pclass} = this.state
-        this.props.history.push(`/jc10?name=${name}&gender=${gender}`)
-        let feParams = querystring.parse(this.props.location.search)
-        console.log(feParams    )
 
         if(name) {
             filterData = {...filterData, name}
-            /**
-             * filterData = {
-             *      name : this.state.name
-             * }
-             */
+        }
+        if(agemax && agemin) {
+            filterData = {...filterData, agemax, agemin}
+        }
+        if(gender == 'Male' || gender == 'Female') {
+            filterData = {...filterData, gender}
+        }
+        if(survived < 2) {
+            filterData = {...filterData, survived}
+        }
+        if(pclass != 0) {
+            filterData = {...filterData, pclass}
+        }
+        this.pushUrl()
+
+        Axios.get(URL_API + 'getalldata', {
+            params : filterData
+        })
+        .then(res => {
+            this.setState({data : res.data})
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
+    pushUrl = () => {
+        let filterData = {}
+        let {name, agemax, agemin, gender, pclass, survived} = this.state
+
+        if(name) {
+            filterData = {...filterData, name}
         }
         if(agemax && agemin) {
             filterData = {...filterData, agemax, agemin}
@@ -79,19 +113,8 @@ class filterBE extends Component {
             filterData = {...filterData, pclass}
         }
 
-        Axios.get(URL_API + 'getalldata', {
-            params : filterData
-        })
-        .then(res => {
-            this.setState({data : res.data})
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }
-
-    pushUrl = () => {
-
+        // console.log(querystring.stringify(filterData))
+        this.props.history.push('/search?'+querystring.stringify(filterData))
     }
 
     renderTable = () => {

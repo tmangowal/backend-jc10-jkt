@@ -2,15 +2,16 @@ let app = require('express')()
 let cors = require('cors')
 let bodyParser = require('body-parser')
 let mysql = require('mysql')
+const port = process.env.PORT || 8080
 
 app.use(bodyParser.json())
 app.use(cors())
 
 let db = mysql.createConnection({
-    user : 'root',
+    user : 'tmangowal123',
     password : 'password',
-    host : 'localhost',
-    database : 'titanic_jc10'
+    host : 'db4free.net',
+    database : 'train_jc10_theo'
 })
 
 app.get('/getalldata', (req, res) => {
@@ -57,4 +58,4 @@ app.get('/getpclass', (req,res) => {
     })
 })
 
-app.listen(8080, console.log('Listening . . .'))
+app.listen(port, console.log('Listening . . .'))
