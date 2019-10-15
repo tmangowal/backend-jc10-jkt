@@ -1,0 +1,1 @@
+let {addMovie, deleteMovie, editMovie, getMovies} = require('./moviesController')
